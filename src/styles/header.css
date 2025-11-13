@@ -1,0 +1,130 @@
+.header {
+    position: sticky;
+    top: 0;
+    height: 64px;
+    background-color: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .menu-button {
+    display: flex;
+  }
+  
+  .header-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-input {
+    width: 280px;
+    padding: 8px 36px 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+  }
+  
+  .search-icon {
+    position: absolute;
+    right: 12px;
+    color: var(--text-secondary);
+    pointer-events: none;
+  }
+  
+  .notification-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background-color: #dc3545;
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: 10px;
+    min-width: 16px;
+    text-align: center;
+  }
+  
+  .header-profile {
+    margin-left: 8px;
+  }
+  
+  .profile-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-color), #667eea);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .profile-avatar:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .header {
+      padding: 0 16px;
+    }
+  
+    .search-container {
+      display: none;
+    }
+  
+    .header-title {
+      font-size: 18px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .header {
+      padding: 0 12px;
+    }
+  
+    .header-right {
+      gap: 8px;
+    }
+  
+    .header-title {
+      display: none;
+    }
+  }
