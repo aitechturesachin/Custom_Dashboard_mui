@@ -1,160 +1,160 @@
 .charts-container {
-    display: grid;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.chart-card {
+  background-color: var(--bg-primary);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chart-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.chart-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.chart-description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.chart-content {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+  .charts-container {
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-    margin-top: 24px;
+    gap: 20px;
   }
-  
+}
+
+@media (max-width: 1200px) {
+  .charts-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
   .chart-card {
-    background-color: var(--bg-primary);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    padding: 24px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 20px;
   }
-  
-  .chart-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-  }
-  
-  .chart-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  
+
   .chart-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 4px;
+    font-size: 16px;
   }
-  
+
   .chart-description {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin: 0;
-  }
-  
-  .chart-content {
-    width: 100%;
-    overflow: hidden;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 1400px) {
-    .charts-container {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-  }
-  
-  @media (max-width: 1200px) {
-    .charts-container {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-  
-    .chart-card {
-      padding: 20px;
-    }
-  
-    .chart-title {
-      font-size: 16px;
-    }
-  
-    .chart-description {
-      font-size: 12px;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .charts-container {
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-  
-    .chart-card {
-      padding: 16px;
-    }
-  
-    .chart-title {
-      font-size: 15px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .charts-container {
-      gap: 12px;
-    }
-  
-    .chart-card {
-      padding: 14px;
-    }
-  
-    .chart-title {
-      font-size: 14px;
-    }
-  
-    .chart-description {
-      font-size: 11px;
-    }
-  
-    .chart-content {
-      margin-top: 12px;
-    }
-  }
-  
-  /* MUI Charts Theme Overrides */
-  .chart-content svg {
-    width: 100% !important;
-    height: auto !important;
-  }
-  
-  /* Ensure charts are responsive */
-  .chart-content > div {
-    width: 100% !important;
-    height: 300px !important;
-  }
-  
-  @media (max-width: 768px) {
-    .chart-content > div {
-      height: 280px !important;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .chart-content > div {
-      height: 250px !important;
-    }
-  }
-  
-  /* Custom styling for dual-axis charts */
-  .chart-card .MuiChartsAxis-left .MuiChartsAxis-label,
-  .chart-card .MuiChartsAxis-right .MuiChartsAxis-label {
-    font-weight: 600;
     font-size: 12px;
   }
-  
-  /* Scatter plot points styling */
-  .chart-card .MuiScatterSeries-root circle {
-    r: 6;
-    transition: r 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  .charts-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
-  
-  .chart-card .MuiScatterSeries-root circle:hover {
-    r: 8;
+
+  .chart-card {
+    padding: 16px;
   }
-  
-  /* Legend spacing improvements for complex charts */
-  .chart-card .MuiChartsLegend-root {
-    margin-top: 8px;
+
+  .chart-title {
+    font-size: 15px;
   }
-  
-  /* Grid lines for better readability */
-  .chart-content .MuiChartsGrid-line {
-    stroke-dasharray: 3 3;
-    opacity: 0.3;
+}
+
+@media (max-width: 480px) {
+  .charts-container {
+    gap: 12px;
   }
+
+  .chart-card {
+    padding: 14px;
+  }
+
+  .chart-title {
+    font-size: 14px;
+  }
+
+  .chart-description {
+    font-size: 11px;
+  }
+
+  .chart-content {
+    margin-top: 12px;
+  }
+}
+
+/* MUI Charts Theme Overrides */
+.chart-content svg {
+  width: 100% !important;
+  height: auto !important;
+}
+
+/* Ensure charts are responsive */
+.chart-content > div {
+  width: 100% !important;
+  height: 300px !important;
+}
+
+@media (max-width: 768px) {
+  .chart-content > div {
+    height: 280px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .chart-content > div {
+    height: 250px !important;
+  }
+}
+
+/* Custom styling for dual-axis charts */
+.chart-card .MuiChartsAxis-left .MuiChartsAxis-label,
+.chart-card .MuiChartsAxis-right .MuiChartsAxis-label {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* Scatter plot points styling */
+.chart-card .MuiScatterSeries-root circle {
+  r: 6;
+  transition: r 0.2s ease;
+}
+
+.chart-card .MuiScatterSeries-root circle:hover {
+  r: 8;
+}
+
+/* Legend spacing improvements for complex charts */
+.chart-card .MuiChartsLegend-root {
+  margin-top: 8px;
+}
+
+/* Grid lines for better readability */
+.chart-content .MuiChartsGrid-line {
+  stroke-dasharray: 3 3;
+  opacity: 0.3;
+}

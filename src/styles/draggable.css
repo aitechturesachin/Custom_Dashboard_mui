@@ -1,341 +1,341 @@
 /* Draggable Charts Wrapper */
 .draggable-charts-wrapper {
-    margin-top: 24px;
-  }
-  
-  /* Control Panel */
+  margin-top: 24px;
+}
+
+/* Control Panel */
+.charts-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background-color: var(--bg-primary);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.controls-left {
+  flex: 1;
+  min-width: 200px;
+}
+
+.controls-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.controls-description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.controls-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--accent-color);
+}
+
+.control-btn svg {
+  flex-shrink: 0;
+}
+
+/* Restore Dropdown */
+.restore-dropdown {
+  position: relative;
+}
+
+.restore-dropdown:hover .restore-menu {
+  display: block;
+}
+
+.restore-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  z-index: 100;
+  padding: 8px;
+}
+
+.restore-item {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.restore-item:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Draggable Grid Layout */
+.draggable-grid {
+  position: relative;
+}
+
+.react-grid-item {
+  transition: all 200ms ease;
+  transition-property: left, top, width, height;
+}
+
+.react-grid-item.cssTransforms {
+  transition-property: transform, width, height;
+}
+
+.react-grid-item.resizing {
+  transition: none;
+  z-index: 100;
+}
+
+.react-grid-item.react-draggable-dragging {
+  transition: none;
+  z-index: 100;
+  will-change: transform;
+}
+
+.react-grid-item.dropping {
+  visibility: hidden;
+}
+
+.react-grid-item.react-grid-placeholder {
+  background: var(--accent-color);
+  opacity: 0.2;
+  transition-duration: 100ms;
+  z-index: 2;
+  border-radius: 12px;
+}
+
+/* Draggable Chart Card */
+.draggable-chart-card {
+  height: 100%;
+  background-color: var(--bg-primary);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.react-grid-item:hover .draggable-chart-card {
+  box-shadow: var(--shadow-lg);
+}
+
+.draggable-chart-card .chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.chart-header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.drag-handle {
+  cursor: grab;
+  color: var(--text-secondary);
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-top: -2px;
+}
+
+.drag-handle:hover {
+  color: var(--text-primary);
+  background-color: var(--hover-bg);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+  color: var(--accent-color);
+}
+
+.draggable-chart-card .chart-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.draggable-chart-card .chart-description {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chart-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.chart-action-btn {
+  padding: 6px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.chart-action-btn:hover {
+  color: #dc3545;
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.draggable-chart-card .chart-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.draggable-chart-card .chart-content > div {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Resize Handle */
+.react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  z-index: 10;
+}
+
+.react-resizable-handle-se {
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+}
+
+.react-resizable-handle-se::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--text-secondary);
+  border-bottom: 2px solid var(--text-secondary);
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.react-grid-item:hover .react-resizable-handle-se::after {
+  opacity: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .charts-controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    padding: 16px 20px;
-    background-color: var(--bg-primary);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-  
-  .controls-left {
-    flex: 1;
-    min-width: 200px;
-  }
-  
-  .controls-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin: 0 0 4px 0;
-  }
-  
-  .controls-description {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin: 0;
-  }
-  
-  .controls-right {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-  
-  .control-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background-color: var(--bg-secondary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .control-btn:hover {
-    background-color: var(--hover-bg);
-    border-color: var(--accent-color);
-  }
-  
-  .control-btn svg {
-    flex-shrink: 0;
-  }
-  
-  /* Restore Dropdown */
-  .restore-dropdown {
-    position: relative;
-  }
-  
-  .restore-dropdown:hover .restore-menu {
-    display: block;
-  }
-  
-  .restore-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    right: 0;
-    margin-top: 8px;
-    background-color: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: var(--shadow-lg);
-    min-width: 200px;
-    z-index: 100;
-    padding: 8px;
-  }
-  
-  .restore-item {
-    display: block;
-    width: 100%;
-    padding: 10px 12px;
-    background: none;
-    border: none;
-    color: var(--text-primary);
-    font-size: 14px;
-    text-align: left;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background-color 0.2s ease;
-  }
-  
-  .restore-item:hover {
-    background-color: var(--hover-bg);
-  }
-  
-  /* Draggable Grid Layout */
-  .draggable-grid {
-    position: relative;
-  }
-  
-  .react-grid-item {
-    transition: all 200ms ease;
-    transition-property: left, top, width, height;
-  }
-  
-  .react-grid-item.cssTransforms {
-    transition-property: transform, width, height;
-  }
-  
-  .react-grid-item.resizing {
-    transition: none;
-    z-index: 100;
-  }
-  
-  .react-grid-item.react-draggable-dragging {
-    transition: none;
-    z-index: 100;
-    will-change: transform;
-  }
-  
-  .react-grid-item.dropping {
-    visibility: hidden;
-  }
-  
-  .react-grid-item.react-grid-placeholder {
-    background: var(--accent-color);
-    opacity: 0.2;
-    transition-duration: 100ms;
-    z-index: 2;
-    border-radius: 12px;
-  }
-  
-  /* Draggable Chart Card */
-  .draggable-chart-card {
-    height: 100%;
-    background-color: var(--bg-primary);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    padding: 20px;
-    display: flex;
     flex-direction: column;
-    transition: box-shadow 0.2s ease;
-    overflow: hidden;
-  }
-  
-  .react-grid-item:hover .draggable-chart-card {
-    box-shadow: var(--shadow-lg);
-  }
-  
-  .draggable-chart-card .chart-header {
-    display: flex;
     align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    flex-shrink: 0;
   }
-  
-  .chart-header-left {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    flex: 1;
-    min-width: 0;
+
+  .controls-right {
+    width: 100%;
+    justify-content: flex-start;
   }
-  
-  .drag-handle {
-    cursor: grab;
-    color: var(--text-secondary);
-    padding: 4px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-    margin-top: -2px;
+
+  .restore-menu {
+    left: 0;
+    right: auto;
   }
-  
-  .drag-handle:hover {
-    color: var(--text-primary);
-    background-color: var(--hover-bg);
+
+  .draggable-chart-card {
+    padding: 16px;
   }
-  
-  .drag-handle:active {
-    cursor: grabbing;
-    color: var(--accent-color);
-  }
-  
+
   .draggable-chart-card .chart-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin: 0 0 4px 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 15px;
   }
-  
+
   .draggable-chart-card .chart-description {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .controls-title {
+    font-size: 16px;
+  }
+
+  .controls-description {
     font-size: 12px;
-    color: var(--text-secondary);
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
-  
-  .chart-actions {
-    display: flex;
-    gap: 4px;
-    flex-shrink: 0;
+
+  .control-btn {
+    font-size: 13px;
+    padding: 6px 12px;
   }
-  
-  .chart-action-btn {
-    padding: 6px;
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    cursor: pointer;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
+
+  .draggable-chart-card {
+    padding: 14px;
   }
-  
-  .chart-action-btn:hover {
-    color: #dc3545;
-    background-color: rgba(220, 53, 69, 0.1);
+
+  .drag-handle svg {
+    width: 14px;
+    height: 14px;
   }
-  
-  .draggable-chart-card .chart-content {
-    flex: 1;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 0;
-  }
-  
-  .draggable-chart-card .chart-content > div {
-    width: 100% !important;
-    height: 100% !important;
-  }
-  
-  /* Resize Handle */
-  .react-resizable-handle {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: transparent;
-    z-index: 10;
-  }
-  
-  .react-resizable-handle-se {
-    bottom: 0;
-    right: 0;
-    cursor: se-resize;
-  }
-  
-  .react-resizable-handle-se::after {
-    content: '';
-    position: absolute;
-    bottom: 4px;
-    right: 4px;
-    width: 8px;
-    height: 8px;
-    border-right: 2px solid var(--text-secondary);
-    border-bottom: 2px solid var(--text-secondary);
-    opacity: 0.5;
-    transition: opacity 0.2s ease;
-  }
-  
-  .react-grid-item:hover .react-resizable-handle-se::after {
-    opacity: 1;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .charts-controls {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  
-    .controls-right {
-      width: 100%;
-      justify-content: flex-start;
-    }
-  
-    .restore-menu {
-      left: 0;
-      right: auto;
-    }
-  
-    .draggable-chart-card {
-      padding: 16px;
-    }
-  
-    .draggable-chart-card .chart-title {
-      font-size: 15px;
-    }
-  
-    .draggable-chart-card .chart-description {
-      font-size: 11px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .controls-title {
-      font-size: 16px;
-    }
-  
-    .controls-description {
-      font-size: 12px;
-    }
-  
-    .control-btn {
-      font-size: 13px;
-      padding: 6px 12px;
-    }
-  
-    .draggable-chart-card {
-      padding: 14px;
-    }
-  
-    .drag-handle svg {
-      width: 14px;
-      height: 14px;
-    }
-  }
+}

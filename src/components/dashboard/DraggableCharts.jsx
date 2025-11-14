@@ -115,7 +115,7 @@ const DraggableCharts = () => {
     revenue: (
       <DraggableChartCard
         id="revenue"
-        title="Monthly Revenuesssssssssssssssssssssssss"
+        title="Monthly Revenue"
         description="Revenue trend for the current year"
         onRemove={handleRemoveChart}
       >

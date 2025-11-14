@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import DashboardLayout from './components/layout/DashboardLayout';
-import DashboardCharts from './components/dashboard/DashboardCharts';
+import DraggableCharts from './components/dashboard/DraggableCharts';
 import './styles/theme.css';
 
 function App() {
@@ -63,17 +63,8 @@ function App() {
             </div>
           </div>
           
-          {/* Charts Section */}
-          <div style={{ 
-            marginBottom: '24px'
-          }}>
-            <h3 style={{ 
-              marginBottom: '16px',
-              fontSize: '20px',
-              fontWeight: '600'
-            }}>Analytics Overview</h3>
-            <DashboardCharts />
-          </div>
+          {/* Draggable Charts Section */}
+          <DraggableCharts />
         </div>
       </DashboardLayout>
     </ThemeProvider>
