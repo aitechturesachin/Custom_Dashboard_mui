@@ -10,22 +10,34 @@ const DraggableChartCard = ({
   children, 
   onRemove, 
   id,
-  chartType 
+  chartType,
+  onFilterChange // NEW: callback to parent
 }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [showActions, setShowActions] = useState(false);
+  const [activeFilters, setActiveFilters] = useState(null);
 
   const handleApplyFilters = (filters) => {
-    console.log('Filters applied:', filters);
-    // In real app, pass filters to chart component
+    setActiveFilters(filters);
+    if (onFilterChange) {
+      onFilterChange(id, filters);
+    }
+    setShowFilters(false);
   };
 
   const handleApplySettings = (settings) => {
     console.log('Settings applied:', settings);
-    // In real app, apply settings to chart
+    // Settings will be handled separately
   };
+
+  const hasActiveFilters = activeFilters && (
+    activeFilters.dateRange?.start || 
+    activeFilters.dateRange?.end || 
+    activeFilters.valueRange?.min || 
+    activeFilters.valueRange?.max ||
+    activeFilters.selectedCategories?.length > 0
+  );
 
   return (
     <>
@@ -45,11 +57,14 @@ const DraggableChartCard = ({
             <div className="chart-title-wrapper">
               <h3 className="draggable-chart-title">{title}</h3>
               {description && <p className="draggable-chart-description">{description}</p>}
+              {hasActiveFilters && (
+                <span className="filter-badge">Filtered</span>
+              )}
             </div>
           </div>
           <div className="chart-actions">
             <button 
-              className="chart-action-icon-btn"
+              className={`chart-action-icon-btn ${hasActiveFilters ? 'active' : ''}`}
               onClick={() => setShowFilters(true)}
               title="Filter data"
             >
@@ -64,7 +79,7 @@ const DraggableChartCard = ({
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <circle cx="12" cy="12" r="3" strokeWidth="2"/>
-                <path d="M12 1v6m0 6v6m0-18l-2.598 1.5M14.598 7.5 12 9m-2.598 1.5L12 15m2.598-1.5L12 9M1 12h6m6 0h6M1 12l1.5 2.598M7.5 9.402 9 12m1.5 2.598L12 12M7.5 14.598 9 12" strokeWidth="2"/>
+                <path d="M12 1v6m0 6v6" strokeWidth="2"/>
               </svg>
             </button>
             <button 
@@ -99,6 +114,7 @@ const DraggableChartCard = ({
         onClose={() => setShowFilters(false)}
         onApplyFilters={handleApplyFilters}
         chartType={chartType}
+        currentFilters={activeFilters}
       />
       
       <ChartSettingsModal

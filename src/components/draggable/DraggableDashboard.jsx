@@ -21,6 +21,7 @@ import {
   biaxialData,
   scatterData,
 } from '../dashboard/chartData';
+import { applyFilters } from '../../utils/chartFilters';
 import {
   exportLayout,
   importLayout,
@@ -28,7 +29,6 @@ import {
   parseShareableURL,
   savePreset,
   getPresets,
-  deletePreset,
   printDashboard,
 } from '../../utils/dashboardUtils';
 import '../../styles/draggable-dashboard.css';
@@ -86,6 +86,9 @@ const DraggableDashboard = () => {
     'scatter',
   ]);
 
+  // Chart filters state - NEW
+  const [chartFilters, setChartFilters] = useState({});
+
   // Presets state
   const [presets, setPresets] = useState(getPresets());
 
@@ -112,6 +115,14 @@ const DraggableDashboard = () => {
     }
   };
 
+  // Handle filter change - NEW
+  const handleFilterChange = (chartId, filters) => {
+    setChartFilters(prev => ({
+      ...prev,
+      [chartId]: filters,
+    }));
+  };
+
   // Reset layout to default
   const handleResetLayout = () => {
     setLayouts({
@@ -122,6 +133,7 @@ const DraggableDashboard = () => {
     });
     localStorage.removeItem('draggableDashboardLayout');
     setVisibleCharts(['revenue', 'orders', 'category', 'traffic', 'biaxial', 'scatter']);
+    setChartFilters({}); // Clear all filters
   };
 
   // Export layout
@@ -143,7 +155,7 @@ const DraggableDashboard = () => {
 
   // Save preset
   const handleSavePreset = (name) => {
-    const newPreset = savePreset(name, layouts, visibleCharts);
+    savePreset(name, layouts, visibleCharts);
     setPresets(getPresets());
     alert(`Preset "${name}" saved successfully!`);
   };
@@ -166,45 +178,61 @@ const DraggableDashboard = () => {
     printDashboard();
   };
 
-  // Chart definitions
-  const chartDefinitions = useMemo(() => ({
-    revenue: {
-      title: 'Monthly Revenue',
-      description: 'Revenue trend for the current year',
-      component: <RevenueChart data={revenueData} chartColors={chartColors} />,
-      type: 'bar',
-    },
-    orders: {
-      title: 'Weekly Orders',
-      description: 'Orders received this week',
-      component: <OrdersChart data={ordersData} chartColors={chartColors} />,
-      type: 'line',
-    },
-    category: {
-      title: 'Sales by Category',
-      description: 'Product category distribution',
-      component: <CategoryChart data={categoryData} chartColors={chartColors} />,
-      type: 'category',
-    },
-    traffic: {
-      title: 'Traffic by Device',
-      description: 'User traffic across different devices',
-      component: <TrafficChart data={trafficData} chartColors={chartColors} />,
-      type: 'bar',
-    },
-    biaxial: {
-      title: 'Revenue & Profit Margin Analysis',
-      description: 'Dual-axis comparison of revenue and profit margins',
-      component: <BiaxialChart data={biaxialData} chartColors={chartColors} />,
-      type: 'line',
-    },
-    scatter: {
-      title: 'Performance Metrics Correlation',
-      description: 'Engagement vs Sales & Customer Satisfaction',
-      component: <ScatterChartComponent data={scatterData} chartColors={chartColors} />,
-      type: 'scatter',
-    },
-  }), [chartColors]);
+  // Get filtered data for each chart - NEW
+  const getFilteredData = (chartId, originalData, chartType) => {
+    const filters = chartFilters[chartId];
+    if (!filters) return originalData;
+    return applyFilters(originalData, filters, chartType);
+  };
+
+  // Chart definitions with filtered data - UPDATED
+  const chartDefinitions = useMemo(() => {
+    const filteredRevenueData = getFilteredData('revenue', revenueData, 'bar');
+    const filteredOrdersData = getFilteredData('orders', ordersData, 'line');
+    const filteredCategoryData = getFilteredData('category', categoryData, 'category');
+    const filteredTrafficData = getFilteredData('traffic', trafficData, 'bar');
+    const filteredBiaxialData = getFilteredData('biaxial', biaxialData, 'line');
+    const filteredScatterData = getFilteredData('scatter', scatterData, 'scatter');
+
+    return {
+      revenue: {
+        title: 'Monthly Revenue',
+        description: 'Revenue trend for the current year',
+        component: <RevenueChart data={filteredRevenueData} chartColors={chartColors} />,
+        type: 'bar',
+      },
+      orders: {
+        title: 'Weekly Orders',
+        description: 'Orders received this week',
+        component: <OrdersChart data={filteredOrdersData} chartColors={chartColors} />,
+        type: 'line',
+      },
+      category: {
+        title: 'Sales by Category',
+        description: 'Product category distribution',
+        component: <CategoryChart data={filteredCategoryData} chartColors={chartColors} />,
+        type: 'category',
+      },
+      traffic: {
+        title: 'Traffic by Device',
+        description: 'User traffic across different devices',
+        component: <TrafficChart data={filteredTrafficData} chartColors={chartColors} />,
+        type: 'bar',
+      },
+      biaxial: {
+        title: 'Revenue & Profit Margin Analysis',
+        description: 'Dual-axis comparison of revenue and profit margins',
+        component: <BiaxialChart data={filteredBiaxialData} chartColors={chartColors} />,
+        type: 'line',
+      },
+      scatter: {
+        title: 'Performance Metrics Correlation',
+        description: 'Engagement vs Sales & Customer Satisfaction',
+        component: <ScatterChartComponent data={filteredScatterData} chartColors={chartColors} />,
+        type: 'scatter',
+      },
+    };
+  }, [chartColors, chartFilters]);
 
   // Get removed charts
   const removedCharts = ['revenue', 'orders', 'category', 'traffic', 'biaxial', 'scatter']
@@ -239,6 +267,7 @@ const DraggableDashboard = () => {
                 description={chart.description}
                 onRemove={handleRemoveChart}
                 chartType={chart.type}
+                onFilterChange={handleFilterChange}
               >
                 {chart.component}
               </DraggableChartCard>

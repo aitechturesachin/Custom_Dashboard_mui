@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/modal.css';
 
-const ChartFiltersPanel = ({ isOpen, onClose, onApplyFilters, chartType }) => {
+const ChartFiltersPanel = ({ isOpen, onClose, onApplyFilters, chartType, currentFilters }) => {
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [valueRange, setValueRange] = useState({ min: '', max: '' });
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   const categories = ['Electronics', 'Clothing', 'Food', 'Books', 'Others'];
+
+  // Load current filters when modal opens
+  useEffect(() => {
+    if (isOpen && currentFilters) {
+      setDateRange(currentFilters.dateRange || { start: '', end: '' });
+      setValueRange(currentFilters.valueRange || { min: '', max: '' });
+      setSelectedCategories(currentFilters.selectedCategories || []);
+    }
+  }, [isOpen, currentFilters]);
 
   const handleApply = () => {
     onApplyFilters({
@@ -14,14 +23,25 @@ const ChartFiltersPanel = ({ isOpen, onClose, onApplyFilters, chartType }) => {
       valueRange,
       selectedCategories,
     });
-    onClose();
   };
 
   const handleReset = () => {
     setDateRange({ start: '', end: '' });
     setValueRange({ min: '', max: '' });
     setSelectedCategories([]);
+    onApplyFilters({
+      dateRange: { start: '', end: '' },
+      valueRange: { min: '', max: '' },
+      selectedCategories: [],
+    });
   };
+
+  const hasActiveFilters = 
+    dateRange.start || 
+    dateRange.end || 
+    valueRange.min || 
+    valueRange.max || 
+    selectedCategories.length > 0;
 
   if (!isOpen) return null;
 
@@ -88,6 +108,9 @@ const ChartFiltersPanel = ({ isOpen, onClose, onApplyFilters, chartType }) => {
                 />
               </div>
             </div>
+            <p className="filter-hint">
+              Example: For revenue chart, try min: 50000, max: 80000
+            </p>
           </div>
 
           {/* Category Filter */}
@@ -114,10 +137,20 @@ const ChartFiltersPanel = ({ isOpen, onClose, onApplyFilters, chartType }) => {
               </div>
             </div>
           )}
+
+          {hasActiveFilters && (
+            <div className="filter-active-badge">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" strokeWidth="2"/>
+                <path d="M12 6v6l4 2" strokeWidth="2"/>
+              </svg>
+              Active filters applied
+            </div>
+          )}
         </div>
         <div className="modal-footer">
           <button className="btn btn-secondary" onClick={handleReset}>
-            Reset
+            Clear Filters
           </button>
           <button className="btn btn-primary" onClick={handleApply}>
             Apply Filters
