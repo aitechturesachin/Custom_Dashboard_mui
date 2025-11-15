@@ -12,13 +12,22 @@ const DraggableChartCard = ({
   id,
   chartType,
   onFilterChange,
-  onSettingsChange // NEW: callback for settings
+  onSettingsChange
 }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [activeFilters, setActiveFilters] = useState(null);
-  const [activeSettings, setActiveSettings] = useState(null);
+  
+  // Initialize with default settings instead of null
+  const [activeSettings, setActiveSettings] = useState({
+    primaryColor: '#4dabf7',
+    secondaryColor: '#51cf66',
+    showLegend: true,
+    showGrid: true,
+    animationEnabled: true,
+    fontSize: 12,
+  });
 
   const handleApplyFilters = (filters) => {
     setActiveFilters(filters);
@@ -44,14 +53,14 @@ const DraggableChartCard = ({
     activeFilters.selectedCategories?.length > 0
   );
 
-  const hasActiveSettings = activeSettings && (
+  // Check if settings differ from defaults
+  const hasActiveSettings = 
     activeSettings.primaryColor !== '#4dabf7' ||
     activeSettings.secondaryColor !== '#51cf66' ||
     !activeSettings.showLegend ||
     !activeSettings.showGrid ||
     !activeSettings.animationEnabled ||
-    activeSettings.fontSize !== 12
-  );
+    activeSettings.fontSize !== 12;
 
   return (
     <>

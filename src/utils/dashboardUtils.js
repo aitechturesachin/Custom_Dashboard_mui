@@ -1,10 +1,12 @@
-// Export layout as JSON
-export const exportLayout = (layouts, visibleCharts, presetName = 'My Layout') => {
+// Export layout as JSON with all state
+export const exportLayout = (layouts, visibleCharts, filters = {}, settings = {}) => {
   const exportData = {
-    name: presetName,
+    name: 'Dashboard Layout',
     timestamp: new Date().toISOString(),
     layouts: layouts,
     visibleCharts: visibleCharts,
+    filters: filters,
+    settings: settings,
     version: '1.0',
   };
 
@@ -25,6 +27,10 @@ export const importLayout = (file) => {
     reader.onload = (e) => {
       try {
         const data = JSON.parse(e.target.result);
+        if (!data.layouts || !data.visibleCharts) {
+          reject(new Error('Invalid layout file format'));
+          return;
+        }
         resolve(data);
       } catch (error) {
         reject(new Error('Invalid JSON file'));
@@ -92,4 +98,12 @@ export const deletePreset = (presetId) => {
 // Print layout
 export const printDashboard = () => {
   window.print();
+};
+
+// Clear all dashboard data
+export const clearAllDashboardData = () => {
+  localStorage.removeItem('draggableDashboardLayout');
+  localStorage.removeItem('draggableVisibleCharts');
+  localStorage.removeItem('draggableChartFilters');
+  localStorage.removeItem('draggableChartSettings');
 };

@@ -53,14 +53,7 @@ const DraggableDashboard = () => {
     { i: 'scatter', x: 6, y: 6, w: 6, h: 3, minW: 4, minH: 3 },
   ];
 
-  // Check for shared dashboard URL
-  useEffect(() => {
-    const sharedData = parseShareableURL();
-    if (sharedData) {
-      setLayouts(sharedData.layouts);
-      setVisibleCharts(sharedData.visibleCharts);
-    }
-  }, []);
+  const allChartIds = ['revenue', 'orders', 'category', 'traffic', 'biaxial', 'scatter'];
 
   // Load saved layout from localStorage
   const [layouts, setLayouts] = useState(() => {
@@ -76,21 +69,26 @@ const DraggableDashboard = () => {
     };
   });
 
-  // Visible charts state
-  const [visibleCharts, setVisibleCharts] = useState([
-    'revenue',
-    'orders',
-    'category',
-    'traffic',
-    'biaxial',
-    'scatter',
-  ]);
+  // Load visible charts from localStorage - FIXED
+  const [visibleCharts, setVisibleCharts] = useState(() => {
+    const savedVisibleCharts = localStorage.getItem('draggableVisibleCharts');
+    if (savedVisibleCharts) {
+      return JSON.parse(savedVisibleCharts);
+    }
+    return allChartIds;
+  });
 
   // Chart filters state
-  const [chartFilters, setChartFilters] = useState({});
+  const [chartFilters, setChartFilters] = useState(() => {
+    const savedFilters = localStorage.getItem('draggableChartFilters');
+    return savedFilters ? JSON.parse(savedFilters) : {};
+  });
 
-  // Chart settings state - NEW
-  const [chartSettings, setChartSettings] = useState({});
+  // Chart settings state
+  const [chartSettings, setChartSettings] = useState(() => {
+    const savedSettings = localStorage.getItem('draggableChartSettings');
+    return savedSettings ? JSON.parse(savedSettings) : {};
+  });
 
   // Presets state
   const [presets, setPresets] = useState(getPresets());
@@ -100,6 +98,53 @@ const DraggableDashboard = () => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareURL, setShareURL] = useState('');
 
+  // Check for shared dashboard URL on mount
+  useEffect(() => {
+    const sharedData = parseShareableURL();
+    if (sharedData) {
+      setLayouts(sharedData.layouts);
+      setVisibleCharts(sharedData.visibleCharts);
+      // Save shared data to localStorage
+      localStorage.setItem('draggableDashboardLayout', JSON.stringify(sharedData.layouts));
+      localStorage.setItem('draggableVisibleCharts', JSON.stringify(sharedData.visibleCharts));
+    }
+  }, []);
+
+  // Clean up layout when charts are removed - IMPORTANT
+  useEffect(() => {
+    // Remove layout items for hidden charts
+    const cleanedLayouts = {};
+    Object.keys(layouts).forEach(breakpoint => {
+      cleanedLayouts[breakpoint] = layouts[breakpoint].filter(item => 
+        visibleCharts.includes(item.i)
+      );
+    });
+    
+    // Only update if there's a difference
+    const hasChanges = Object.keys(layouts).some(breakpoint => 
+      layouts[breakpoint].length !== cleanedLayouts[breakpoint].length
+    );
+
+    if (hasChanges) {
+      setLayouts(cleanedLayouts);
+    }
+  }, [visibleCharts]);
+
+  // Save visible charts to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('draggableVisibleCharts', JSON.stringify(visibleCharts));
+  }, [visibleCharts]);
+
+  // Save filters to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('draggableChartFilters', JSON.stringify(chartFilters));
+  }, [chartFilters]);
+
+  // Save settings to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('draggableChartSettings', JSON.stringify(chartSettings));
+  }, [chartSettings]);
+
   // Handle layout change
   const handleLayoutChange = (currentLayout, allLayouts) => {
     setLayouts(allLayouts);
@@ -108,13 +153,45 @@ const DraggableDashboard = () => {
 
   // Handle chart removal
   const handleRemoveChart = (chartId) => {
-    setVisibleCharts(prev => prev.filter(id => id !== chartId));
+    setVisibleCharts(prev => {
+      const newVisible = prev.filter(id => id !== chartId);
+      // Immediately save to localStorage
+      localStorage.setItem('draggableVisibleCharts', JSON.stringify(newVisible));
+      return newVisible;
+    });
   };
 
   // Handle chart restoration
   const handleRestoreChart = (chartId) => {
     if (!visibleCharts.includes(chartId)) {
-      setVisibleCharts(prev => [...prev, chartId]);
+      setVisibleCharts(prev => {
+        const newVisible = [...prev, chartId];
+        // Immediately save to localStorage
+        localStorage.setItem('draggableVisibleCharts', JSON.stringify(newVisible));
+        
+        // Add default layout for restored chart
+        const defaultLayoutItem = initialLayout.find(item => item.i === chartId);
+        if (defaultLayoutItem) {
+          // Find empty space or place at bottom
+          const newLayouts = { ...layouts };
+          Object.keys(newLayouts).forEach(breakpoint => {
+            const maxY = Math.max(...newLayouts[breakpoint].map(item => item.y + item.h), 0);
+            const isSmallScreen = breakpoint === 'sm' || breakpoint === 'xs';
+            newLayouts[breakpoint] = [
+              ...newLayouts[breakpoint],
+              {
+                ...defaultLayoutItem,
+                y: maxY,
+                w: isSmallScreen ? 12 : defaultLayoutItem.w,
+              }
+            ];
+          });
+          setLayouts(newLayouts);
+          localStorage.setItem('draggableDashboardLayout', JSON.stringify(newLayouts));
+        }
+        
+        return newVisible;
+      });
     }
   };
 
@@ -126,7 +203,7 @@ const DraggableDashboard = () => {
     }));
   };
 
-  // Handle settings change - NEW
+  // Handle settings change
   const handleSettingsChange = (chartId, settings) => {
     setChartSettings(prev => ({
       ...prev,
@@ -136,16 +213,23 @@ const DraggableDashboard = () => {
 
   // Reset layout to default
   const handleResetLayout = () => {
-    setLayouts({
+    const defaultLayouts = {
       lg: initialLayout,
       md: initialLayout,
       sm: initialLayout.map(item => ({ ...item, w: 12 })),
       xs: initialLayout.map(item => ({ ...item, w: 12 })),
-    });
-    localStorage.removeItem('draggableDashboardLayout');
-    setVisibleCharts(['revenue', 'orders', 'category', 'traffic', 'biaxial', 'scatter']);
+    };
+    
+    setLayouts(defaultLayouts);
+    setVisibleCharts(allChartIds);
     setChartFilters({});
-    setChartSettings({}); // Clear all settings
+    setChartSettings({});
+    
+    // Clear all from localStorage
+    localStorage.setItem('draggableDashboardLayout', JSON.stringify(defaultLayouts));
+    localStorage.setItem('draggableVisibleCharts', JSON.stringify(allChartIds));
+    localStorage.removeItem('draggableChartFilters');
+    localStorage.removeItem('draggableChartSettings');
   };
 
   // Export layout
@@ -159,6 +243,11 @@ const DraggableDashboard = () => {
       const data = await importLayout(file);
       setLayouts(data.layouts);
       setVisibleCharts(data.visibleCharts);
+      
+      // Save imported data
+      localStorage.setItem('draggableDashboardLayout', JSON.stringify(data.layouts));
+      localStorage.setItem('draggableVisibleCharts', JSON.stringify(data.visibleCharts));
+      
       alert('Layout imported successfully!');
     } catch (error) {
       alert('Failed to import layout: ' + error.message);
@@ -176,6 +265,10 @@ const DraggableDashboard = () => {
   const handleLoadPreset = (preset) => {
     setLayouts(preset.layouts);
     setVisibleCharts(preset.visibleCharts);
+    
+    // Save preset data to localStorage
+    localStorage.setItem('draggableDashboardLayout', JSON.stringify(preset.layouts));
+    localStorage.setItem('draggableVisibleCharts', JSON.stringify(preset.visibleCharts));
   };
 
   // Share dashboard
@@ -197,7 +290,7 @@ const DraggableDashboard = () => {
     return applyFilters(originalData, filters, chartType);
   };
 
-  // Chart definitions with filtered data and settings - UPDATED
+  // Chart definitions with filtered data and settings
   const chartDefinitions = useMemo(() => {
     const filteredRevenueData = getFilteredData('revenue', revenueData, 'bar');
     const filteredOrdersData = getFilteredData('orders', ordersData, 'line');
@@ -271,8 +364,7 @@ const DraggableDashboard = () => {
   }, [chartColors, chartFilters, chartSettings]);
 
   // Get removed charts
-  const removedCharts = ['revenue', 'orders', 'category', 'traffic', 'biaxial', 'scatter']
-    .filter(id => !visibleCharts.includes(id));
+  const removedCharts = allChartIds.filter(id => !visibleCharts.includes(id));
 
   return (
     <div className="draggable-dashboard-wrapper">
@@ -295,6 +387,8 @@ const DraggableDashboard = () => {
       >
         {visibleCharts.map(chartId => {
           const chart = chartDefinitions[chartId];
+          if (!chart) return null; // Safety check
+          
           return (
             <div key={chartId}>
               <DraggableChartCard
