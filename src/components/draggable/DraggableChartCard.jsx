@@ -1,12 +1,10 @@
 import React from 'react';
-// import '../../styles/draggable.css';
 import '../../styles/draggable-dashboard.css';
-
 
 const DraggableChartCard = ({ title, description, children, onRemove, id }) => {
   return (
     <div className="draggable-chart-card">
-      <div className="chart-header">
+      <div className="draggable-chart-header">
         <div className="chart-header-left">
           <div className="drag-handle">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -18,14 +16,14 @@ const DraggableChartCard = ({ title, description, children, onRemove, id }) => {
               <circle cx="15" cy="19" r="2"/>
             </svg>
           </div>
-          <div>
-            <h3 className="chart-title">{title}</h3>
-            {description && <p className="chart-description">{description}</p>}
+          <div className="chart-title-wrapper">
+            <h3 className="draggable-chart-title">{title}</h3>
+            {description && <p className="draggable-chart-description">{description}</p>}
           </div>
         </div>
         <div className="chart-actions">
           <button 
-            className="chart-action-btn"
+            className="chart-remove-btn"
             onClick={() => onRemove && onRemove(id)}
             aria-label="Remove chart"
           >
@@ -36,7 +34,7 @@ const DraggableChartCard = ({ title, description, children, onRemove, id }) => {
           </button>
         </div>
       </div>
-      <div className="chart-content">
+      <div className="draggable-chart-content">
         {children}
       </div>
     </div>

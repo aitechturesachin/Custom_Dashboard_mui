@@ -16,7 +16,9 @@ import {
 } from './chartData';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import '../../styles/draggable.css';
+// import '../../styles/draggable.css';
+import '../../styles/draggable-dashboard.css';
+
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
