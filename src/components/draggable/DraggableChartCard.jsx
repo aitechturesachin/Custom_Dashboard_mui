@@ -11,12 +11,14 @@ const DraggableChartCard = ({
   onRemove, 
   id,
   chartType,
-  onFilterChange // NEW: callback to parent
+  onFilterChange,
+  onSettingsChange // NEW: callback for settings
 }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [activeFilters, setActiveFilters] = useState(null);
+  const [activeSettings, setActiveSettings] = useState(null);
 
   const handleApplyFilters = (filters) => {
     setActiveFilters(filters);
@@ -27,8 +29,11 @@ const DraggableChartCard = ({
   };
 
   const handleApplySettings = (settings) => {
-    console.log('Settings applied:', settings);
-    // Settings will be handled separately
+    setActiveSettings(settings);
+    if (onSettingsChange) {
+      onSettingsChange(id, settings);
+    }
+    setShowSettings(false);
   };
 
   const hasActiveFilters = activeFilters && (
@@ -37,6 +42,15 @@ const DraggableChartCard = ({
     activeFilters.valueRange?.min || 
     activeFilters.valueRange?.max ||
     activeFilters.selectedCategories?.length > 0
+  );
+
+  const hasActiveSettings = activeSettings && (
+    activeSettings.primaryColor !== '#4dabf7' ||
+    activeSettings.secondaryColor !== '#51cf66' ||
+    !activeSettings.showLegend ||
+    !activeSettings.showGrid ||
+    !activeSettings.animationEnabled ||
+    activeSettings.fontSize !== 12
   );
 
   return (
@@ -57,9 +71,14 @@ const DraggableChartCard = ({
             <div className="chart-title-wrapper">
               <h3 className="draggable-chart-title">{title}</h3>
               {description && <p className="draggable-chart-description">{description}</p>}
-              {hasActiveFilters && (
-                <span className="filter-badge">Filtered</span>
-              )}
+              <div className="chart-badges">
+                {hasActiveFilters && (
+                  <span className="filter-badge">Filtered</span>
+                )}
+                {hasActiveSettings && (
+                  <span className="filter-badge settings-badge">Custom</span>
+                )}
+              </div>
             </div>
           </div>
           <div className="chart-actions">
@@ -73,7 +92,7 @@ const DraggableChartCard = ({
               </svg>
             </button>
             <button 
-              className="chart-action-icon-btn"
+              className={`chart-action-icon-btn ${hasActiveSettings ? 'active' : ''}`}
               onClick={() => setShowSettings(true)}
               title="Chart settings"
             >
@@ -121,6 +140,7 @@ const DraggableChartCard = ({
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
         onApplySettings={handleApplySettings}
+        currentSettings={activeSettings}
       />
 
       <FullScreenChart

@@ -86,8 +86,11 @@ const DraggableDashboard = () => {
     'scatter',
   ]);
 
-  // Chart filters state - NEW
+  // Chart filters state
   const [chartFilters, setChartFilters] = useState({});
+
+  // Chart settings state - NEW
+  const [chartSettings, setChartSettings] = useState({});
 
   // Presets state
   const [presets, setPresets] = useState(getPresets());
@@ -115,11 +118,19 @@ const DraggableDashboard = () => {
     }
   };
 
-  // Handle filter change - NEW
+  // Handle filter change
   const handleFilterChange = (chartId, filters) => {
     setChartFilters(prev => ({
       ...prev,
       [chartId]: filters,
+    }));
+  };
+
+  // Handle settings change - NEW
+  const handleSettingsChange = (chartId, settings) => {
+    setChartSettings(prev => ({
+      ...prev,
+      [chartId]: settings,
     }));
   };
 
@@ -133,7 +144,8 @@ const DraggableDashboard = () => {
     });
     localStorage.removeItem('draggableDashboardLayout');
     setVisibleCharts(['revenue', 'orders', 'category', 'traffic', 'biaxial', 'scatter']);
-    setChartFilters({}); // Clear all filters
+    setChartFilters({});
+    setChartSettings({}); // Clear all settings
   };
 
   // Export layout
@@ -178,14 +190,14 @@ const DraggableDashboard = () => {
     printDashboard();
   };
 
-  // Get filtered data for each chart - NEW
+  // Get filtered data for each chart
   const getFilteredData = (chartId, originalData, chartType) => {
     const filters = chartFilters[chartId];
     if (!filters) return originalData;
     return applyFilters(originalData, filters, chartType);
   };
 
-  // Chart definitions with filtered data - UPDATED
+  // Chart definitions with filtered data and settings - UPDATED
   const chartDefinitions = useMemo(() => {
     const filteredRevenueData = getFilteredData('revenue', revenueData, 'bar');
     const filteredOrdersData = getFilteredData('orders', ordersData, 'line');
@@ -198,41 +210,65 @@ const DraggableDashboard = () => {
       revenue: {
         title: 'Monthly Revenue',
         description: 'Revenue trend for the current year',
-        component: <RevenueChart data={filteredRevenueData} chartColors={chartColors} />,
+        component: <RevenueChart 
+          data={filteredRevenueData} 
+          chartColors={chartColors}
+          settings={chartSettings.revenue}
+        />,
         type: 'bar',
       },
       orders: {
         title: 'Weekly Orders',
         description: 'Orders received this week',
-        component: <OrdersChart data={filteredOrdersData} chartColors={chartColors} />,
+        component: <OrdersChart 
+          data={filteredOrdersData} 
+          chartColors={chartColors}
+          settings={chartSettings.orders}
+        />,
         type: 'line',
       },
       category: {
         title: 'Sales by Category',
         description: 'Product category distribution',
-        component: <CategoryChart data={filteredCategoryData} chartColors={chartColors} />,
+        component: <CategoryChart 
+          data={filteredCategoryData} 
+          chartColors={chartColors}
+          settings={chartSettings.category}
+        />,
         type: 'category',
       },
       traffic: {
         title: 'Traffic by Device',
         description: 'User traffic across different devices',
-        component: <TrafficChart data={filteredTrafficData} chartColors={chartColors} />,
+        component: <TrafficChart 
+          data={filteredTrafficData} 
+          chartColors={chartColors}
+          settings={chartSettings.traffic}
+        />,
         type: 'bar',
       },
       biaxial: {
         title: 'Revenue & Profit Margin Analysis',
         description: 'Dual-axis comparison of revenue and profit margins',
-        component: <BiaxialChart data={filteredBiaxialData} chartColors={chartColors} />,
+        component: <BiaxialChart 
+          data={filteredBiaxialData} 
+          chartColors={chartColors}
+          settings={chartSettings.biaxial}
+        />,
         type: 'line',
       },
       scatter: {
         title: 'Performance Metrics Correlation',
         description: 'Engagement vs Sales & Customer Satisfaction',
-        component: <ScatterChartComponent data={filteredScatterData} chartColors={chartColors} />,
+        component: <ScatterChartComponent 
+          data={filteredScatterData} 
+          chartColors={chartColors}
+          settings={chartSettings.scatter}
+        />,
         type: 'scatter',
       },
     };
-  }, [chartColors, chartFilters]);
+  }, [chartColors, chartFilters, chartSettings]);
 
   // Get removed charts
   const removedCharts = ['revenue', 'orders', 'category', 'traffic', 'biaxial', 'scatter']
@@ -268,6 +304,7 @@ const DraggableDashboard = () => {
                 onRemove={handleRemoveChart}
                 chartType={chart.type}
                 onFilterChange={handleFilterChange}
+                onSettingsChange={handleSettingsChange}
               >
                 {chart.component}
               </DraggableChartCard>

@@ -453,6 +453,25 @@
   margin-top: 16px;
 }
 
+/* Add to existing draggable-dashboard.css */
+
+/* Chart Badges Container */
+.chart-badges {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+/* Settings Badge */
+.settings-badge {
+  background-color: #845ef7;
+}
+
+/* Active Settings Button */
+.chart-action-icon-btn.active {
+  color: var(--accent-color);
+  background-color: rgba(77, 171, 247, 0.15);
+}
 
 
 

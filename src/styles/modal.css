@@ -371,6 +371,59 @@
   background-color: rgba(77, 171, 247, 0.1);
 }
 
+/* Color Input Wrapper */
+.color-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.color-value {
+  font-size: 12px;
+  font-family: monospace;
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  background-color: var(--bg-tertiary);
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* Range Labels */
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.range-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* Settings Preview Info */
+.settings-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background-color: rgba(77, 171, 247, 0.1);
+  border: 1px solid rgba(77, 171, 247, 0.3);
+  border-radius: 8px;
+  color: var(--accent-color);
+  font-size: 13px;
+  margin-top: 16px;
+}
+
+.settings-preview svg {
+  flex-shrink: 0;
+}
+
+
+
+
+/* ********************************************************************************** */
+/* ********************************************************************************** */
+
 /* Responsive */
 @media (max-width: 768px) {
   .modal-content {
