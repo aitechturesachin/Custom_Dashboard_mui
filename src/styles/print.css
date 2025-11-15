@@ -1,0 +1,68 @@
+@media print {
+  /* Hide UI elements */
+  .sidebar,
+  .header,
+  .dashboard-control-panel,
+  .drag-handle,
+  .chart-actions,
+  .react-resizable-handle {
+    display: none !important;
+  }
+
+  /* Reset main wrapper margin */
+  .main-wrapper {
+    margin-left: 0 !important;
+  }
+
+  /* Optimize chart cards for print */
+  .draggable-chart-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+
+  /* Reset grid layout for print */
+  .draggable-chart-grid {
+    display: block !important;
+  }
+
+  .react-grid-item {
+    position: static !important;
+    transform: none !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    margin-bottom: 20px;
+  }
+
+  /* Chart sizing for print */
+  .draggable-chart-content {
+    height: 400px !important;
+  }
+
+  /* Remove backgrounds */
+  body {
+    background: white !important;
+  }
+
+  .main-content {
+    background: white !important;
+  }
+
+  /* Page breaks */
+  .draggable-chart-card {
+    page-break-after: auto;
+  }
+
+  /* Print title */
+  @page {
+    margin: 1cm;
+  }
+
+  h2 {
+    font-size: 24pt;
+    margin-bottom: 20pt;
+  }
+}
