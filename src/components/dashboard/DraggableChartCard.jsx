@@ -5,10 +5,14 @@ import '../../styles/draggable-dashboard.css';
 
 const DraggableChartCard = ({ title, description, children, onRemove, id }) => {
   return (
-    <div className="draggable-chart-card">
+    <div 
+    className="draggable-chart-card"
+    >
       <div className="chart-header">
         <div className="chart-header-left">
-          <div className="drag-handle">
+          <div 
+          className="drag-handle"
+          >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <circle cx="9" cy="5" r="2"/>
               <circle cx="9" cy="12" r="2"/>

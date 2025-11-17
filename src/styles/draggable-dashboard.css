@@ -141,7 +141,7 @@
 .react-grid-item {
   transition: all 250ms ease;
   transition-property: left, top, width, height;
-  min-height: 380px !important;
+  min-height: 100px !important;
 }
 
 .react-grid-item.cssTransforms {
@@ -472,9 +472,6 @@
   color: var(--accent-color);
   background-color: rgba(77, 171, 247, 0.15);
 }
-
-
-
 
 /* ********************************************************************************** */
 /* ********************************************************************************** */

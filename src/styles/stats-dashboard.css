@@ -1,0 +1,31 @@
+.stats-dashboard {
+  width: 100%;
+}
+
+.stats-grid {
+  min-height: 280px;
+}
+
+.stat-card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.1);
+  transform: translateY(-2px);
+}
+
+.drag-handle {
+  cursor: grab;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+@media (max-width: 768px) {
+  .stats-dashboard {
+    width: 100%;
+  }
+}
+
