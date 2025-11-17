@@ -34,6 +34,17 @@ import {
 import '../../styles/draggable-dashboard.css';
 import '../../styles/print.css';
 
+const baseChartIds = ['revenue', 'orders', 'category', 'traffic', 'biaxial', 'scatter'];
+
+const baseInitialLayout = [
+  { i: 'revenue', x: 0, y: 0, w: 6, h: 3, minW: 4, minH: 3 },
+  { i: 'orders', x: 6, y: 0, w: 6, h: 3, minW: 4, minH: 3 },
+  { i: 'category', x: 0, y: 3, w: 6, h: 3, minW: 4, minH: 3 },
+  { i: 'traffic', x: 6, y: 3, w: 6, h: 3, minW: 4, minH: 3 },
+  { i: 'biaxial', x: 0, y: 6, w: 6, h: 3, minW: 4, minH: 3 },
+  { i: 'scatter', x: 6, y: 6, w: 6, h: 3, minW: 4, minH: 3 },
+];
+
 const DraggableDashboard = () => {
   const { theme } = useTheme();
 
@@ -43,18 +54,6 @@ const DraggableDashboard = () => {
     grid: theme === 'dark' ? '#3a3f4a' : '#dee2e6',
   };
 
-  // Initial layout configuration
-  const initialLayout = [
-    { i: 'revenue', x: 0, y: 0, w: 6, h: 3, minW: 4, minH: 3 },
-    { i: 'orders', x: 6, y: 0, w: 6, h: 3, minW: 4, minH: 3 },
-    { i: 'category', x: 0, y: 3, w: 6, h: 3, minW: 4, minH: 3 },
-    { i: 'traffic', x: 6, y: 3, w: 6, h: 3, minW: 4, minH: 3 },
-    { i: 'biaxial', x: 0, y: 6, w: 6, h: 3, minW: 4, minH: 3 },
-    { i: 'scatter', x: 6, y: 6, w: 6, h: 3, minW: 4, minH: 3 },
-  ];
-
-  const allChartIds = ['revenue', 'orders', 'category', 'traffic', 'biaxial', 'scatter'];
-
   // Load saved layout from localStorage
   const [layouts, setLayouts] = useState(() => {
     const savedLayout = localStorage.getItem('draggableDashboardLayout');
@@ -62,10 +61,10 @@ const DraggableDashboard = () => {
       return JSON.parse(savedLayout);
     }
     return {
-      lg: initialLayout,
-      md: initialLayout,
-      sm: initialLayout.map(item => ({ ...item, w: 12 })),
-      xs: initialLayout.map(item => ({ ...item, w: 12 })),
+      lg: baseInitialLayout,
+      md: baseInitialLayout,
+      sm: baseInitialLayout.map(item => ({ ...item, w: 12 })),
+      xs: baseInitialLayout.map(item => ({ ...item, w: 12 })),
     };
   });
 
@@ -75,8 +74,11 @@ const DraggableDashboard = () => {
     if (savedVisibleCharts) {
       return JSON.parse(savedVisibleCharts);
     }
-    return allChartIds;
+    return baseChartIds;
   });
+
+  // Excel charts stored by id (e.g., excel-axis, excel-pie)
+  const [excelCharts, setExcelCharts] = useState({});
 
   // Chart filters state
   const [chartFilters, setChartFilters] = useState(() => {
@@ -169,29 +171,40 @@ const DraggableDashboard = () => {
         // Immediately save to localStorage
         localStorage.setItem('draggableVisibleCharts', JSON.stringify(newVisible));
         
-        // Add default layout for restored chart
-        const defaultLayoutItem = initialLayout.find(item => item.i === chartId);
-        if (defaultLayoutItem) {
-          // Find empty space or place at bottom
-          const newLayouts = { ...layouts };
-          Object.keys(newLayouts).forEach(breakpoint => {
-            const maxY = Math.max(...newLayouts[breakpoint].map(item => item.y + item.h), 0);
-            const isSmallScreen = breakpoint === 'sm' || breakpoint === 'xs';
-            newLayouts[breakpoint] = [
-              ...newLayouts[breakpoint],
-              {
+        return newVisible;
+      });
+
+      const defaultLayoutItem = baseInitialLayout.find(item => item.i === chartId);
+      const isExcelChart = Boolean(excelCharts[chartId]);
+
+      if (defaultLayoutItem || isExcelChart) {
+        const newLayouts = { ...layouts };
+        Object.keys(newLayouts).forEach(breakpoint => {
+          const breakpointLayouts = newLayouts[breakpoint] || [];
+          const maxY = breakpointLayouts.length
+            ? Math.max(...breakpointLayouts.map(item => item.y + item.h))
+            : 0;
+          const isSmallScreen = breakpoint === 'sm' || breakpoint === 'xs';
+          const layoutItem = defaultLayoutItem
+            ? {
                 ...defaultLayoutItem,
                 y: maxY,
                 w: isSmallScreen ? 12 : defaultLayoutItem.w,
               }
-            ];
-          });
-          setLayouts(newLayouts);
-          localStorage.setItem('draggableDashboardLayout', JSON.stringify(newLayouts));
-        }
-        
-        return newVisible;
-      });
+            : {
+                i: chartId,
+                x: 0,
+                y: maxY,
+                w: isSmallScreen ? 12 : 6,
+                h: 3,
+                minW: 4,
+                minH: 3,
+              };
+          newLayouts[breakpoint] = [...breakpointLayouts, layoutItem];
+        });
+        setLayouts(newLayouts);
+        localStorage.setItem('draggableDashboardLayout', JSON.stringify(newLayouts));
+      }
     }
   };
 
@@ -214,20 +227,21 @@ const DraggableDashboard = () => {
   // Reset layout to default
   const handleResetLayout = () => {
     const defaultLayouts = {
-      lg: initialLayout,
-      md: initialLayout,
-      sm: initialLayout.map(item => ({ ...item, w: 12 })),
-      xs: initialLayout.map(item => ({ ...item, w: 12 })),
+      lg: baseInitialLayout,
+      md: baseInitialLayout,
+      sm: baseInitialLayout.map(item => ({ ...item, w: 12 })),
+      xs: baseInitialLayout.map(item => ({ ...item, w: 12 })),
     };
     
     setLayouts(defaultLayouts);
-    setVisibleCharts(allChartIds);
+    setVisibleCharts(baseChartIds);
     setChartFilters({});
     setChartSettings({});
+    setExcelCharts({});
     
     // Clear all from localStorage
     localStorage.setItem('draggableDashboardLayout', JSON.stringify(defaultLayouts));
-    localStorage.setItem('draggableVisibleCharts', JSON.stringify(allChartIds));
+    localStorage.setItem('draggableVisibleCharts', JSON.stringify(baseChartIds));
     localStorage.removeItem('draggableChartFilters');
     localStorage.removeItem('draggableChartSettings');
   };
@@ -283,6 +297,67 @@ const DraggableDashboard = () => {
     printDashboard();
   };
 
+  const handleAddExcelChart = (payload) => {
+    const isAxisChart = payload.chartType === 'axis';
+    const chartId = isAxisChart ? 'excel-axis' : 'excel-pie';
+    const title = isAxisChart ? 'Excel Axis Chart' : 'Excel Pie Chart';
+    const description = `Excel data from "${payload.config.sheetName}"`;
+
+    setExcelCharts(prev => ({
+      ...prev,
+      [chartId]: {
+        title,
+        description,
+        mode: payload.chartType,
+        data: payload.chartData,
+      },
+    }));
+
+    setVisibleCharts(prev => {
+      if (prev.includes(chartId)) {
+        localStorage.setItem('draggableVisibleCharts', JSON.stringify(prev));
+        return prev;
+      }
+
+      const updated = [...prev, chartId];
+      localStorage.setItem('draggableVisibleCharts', JSON.stringify(updated));
+      return updated;
+    });
+
+    setLayouts(prevLayouts => {
+      const alreadyConfigured = Object.values(prevLayouts).some(layoutArr =>
+        layoutArr?.some(item => item.i === chartId)
+      );
+
+      if (alreadyConfigured) {
+        return prevLayouts;
+      }
+
+      const updatedLayouts = {};
+      Object.keys(prevLayouts).forEach(breakpoint => {
+        const breakpointLayouts = prevLayouts[breakpoint] || [];
+        const isSmallScreen = breakpoint === 'sm' || breakpoint === 'xs';
+        const maxY = breakpointLayouts.length
+          ? Math.max(...breakpointLayouts.map(item => item.y + item.h))
+          : 0;
+        updatedLayouts[breakpoint] = [
+          ...breakpointLayouts,
+          {
+            i: chartId,
+            x: 0,
+            y: maxY,
+            w: isSmallScreen ? 12 : 6,
+            h: 3,
+            minW: 4,
+            minH: 3,
+          },
+        ];
+      });
+      localStorage.setItem('draggableDashboardLayout', JSON.stringify(updatedLayouts));
+      return updatedLayouts;
+    });
+  };
+
   // Get filtered data for each chart
   const getFilteredData = (chartId, originalData, chartType) => {
     const filters = chartFilters[chartId];
@@ -299,7 +374,7 @@ const DraggableDashboard = () => {
     const filteredBiaxialData = getFilteredData('biaxial', biaxialData, 'line');
     const filteredScatterData = getFilteredData('scatter', scatterData, 'scatter');
 
-    return {
+    const baseDefinitions = {
       revenue: {
         title: 'Monthly Revenue',
         description: 'Revenue trend for the current year',
@@ -361,7 +436,47 @@ const DraggableDashboard = () => {
         type: 'scatter',
       },
     };
-  }, [chartColors, chartFilters, chartSettings]);
+
+    const excelDefinitions = Object.entries(excelCharts).reduce((acc, [chartId, chart]) => {
+      if (!chart) return acc;
+
+      if (chart.mode === 'axis') {
+        acc[chartId] = {
+          title: chart.title,
+          description: chart.description,
+          component: (
+            <RevenueChart
+              data={chart.data}
+              chartColors={chartColors}
+              settings={chartSettings[chartId]}
+            />
+          ),
+          type: 'bar',
+        };
+      } else {
+        acc[chartId] = {
+          title: chart.title,
+          description: chart.description,
+          component: (
+            <CategoryChart
+              data={chart.data}
+              chartColors={chartColors}
+              settings={chartSettings[chartId]}
+            />
+          ),
+          type: 'category',
+        };
+      }
+      return acc;
+    }, {});
+
+    return { ...baseDefinitions, ...excelDefinitions };
+  }, [chartColors, chartFilters, chartSettings, excelCharts]);
+
+  const allChartIds = useMemo(
+    () => [...baseChartIds, ...Object.keys(excelCharts)],
+    [excelCharts]
+  );
 
   // Get removed charts
   const removedCharts = allChartIds.filter(id => !visibleCharts.includes(id));
@@ -379,6 +494,7 @@ const DraggableDashboard = () => {
         onShare={handleShare}
         onPrint={handlePrint}
         presets={presets}
+        onExcelDataReady={handleAddExcelChart}
       />
 
       <DraggableChartGrid

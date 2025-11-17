@@ -16,7 +16,8 @@
     "@mui/x-charts": "^8.18.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-grid-layout": "^1.5.2"
+    "react-grid-layout": "^1.5.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

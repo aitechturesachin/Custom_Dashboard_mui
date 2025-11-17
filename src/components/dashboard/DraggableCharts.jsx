@@ -295,7 +295,7 @@ const DraggableCharts = () => {
       <div className="charts-controls">
         <div className="controls-left">
           <h3 className="controls-title">Dashboard Charts</h3>
-          <p className="controls-description">Drag and drop to rearrange, resize corners to adjust size</p>
+          {/* <p className="controls-description">Drag and drop to rearrange, resize corners to adjust size</p> */}
         </div>
         <div className="controls-right">
           {removedCharts.length > 0 && (

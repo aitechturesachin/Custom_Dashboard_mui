@@ -7,7 +7,7 @@ const ControlPanel = ({ removedCharts, onRestore, onReset }) => {
       <div className="control-panel-left">
         <h3 className="control-panel-title">Dashboard Charts</h3>
         <p className="control-panel-description">
-          Drag and drop to rearrange, resize corners to adjust size
+          {/* Drag and drop to rearrange, resize corners to adjust size */}
         </p>
       </div>
       <div className="control-panel-right">
