@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import '../../styles/sidebar.css';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
@@ -8,7 +9,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { id: 3, label: 'Reports', icon: '📋', path: '/reports' },
     { id: 4, label: 'Customers', icon: '👥', path: '/customers' },
     { id: 5, label: 'Products', icon: '📦', path: '/products' },
-    { id: 6, label: 'Settings', icon: '⚙️', path: '/settings' },
+    { id: 6, label: 'Customize', icon: '🛠️', path: '/customize' },
+    { id: 7, label: 'Settings', icon: '⚙️', path: '/settings' },
   ];
 
   return (
@@ -33,10 +35,16 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <ul className="sidebar-menu">
             {menuItems.map((item) => (
               <li key={item.id} className="sidebar-menu-item">
-                <a href={item.path} className="sidebar-link">
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `sidebar-link ${isActive ? 'active' : ''}`
+                  }
+                  end={item.path === '/'}
+                >
                   <span className="sidebar-icon">{item.icon}</span>
                   {isOpen && <span className="sidebar-label">{item.label}</span>}
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>

@@ -1,18 +1,33 @@
 import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import DashboardLayout from "./components/layout/DashboardLayout";
-import StatsDashboard from "./components/stats/StatsDashboard";
-import DraggableDashboard from "./components/draggable/DraggableDashboard";
+import Dashboard from "./pages/Dashboard";
+import Analytics from "./pages/Analytics";
+import Reports from "./pages/Reports";
+import Customers from "./pages/Customers";
+import Products from "./pages/Products";
+import Settings from "./pages/Settings";
+import CustomizeDashboard from "./pages/CustomizeDashboard";
 import "./styles/theme.css";
-import "./styles/print.css"; // Add this
+import "./styles/print.css";
 
 function App() {
   return (
     <ThemeProvider>
-      <DashboardLayout>
-        <StatsDashboard />
-        <DraggableDashboard />
-      </DashboardLayout>
+      <BrowserRouter>
+        <DashboardLayout>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/customize" element={<CustomizeDashboard />} />
+          </Routes>
+        </DashboardLayout>
+      </BrowserRouter>
     </ThemeProvider>
   );
 }

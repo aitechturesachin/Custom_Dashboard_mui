@@ -23,6 +23,33 @@
     background-color: var(--bg-secondary);
   }
   
+  .page-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    border: 2px dashed var(--border-color);
+    border-radius: 16px;
+    background-color: var(--bg-primary);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .page-placeholder__content {
+    text-align: center;
+    max-width: 480px;
+    padding: 32px;
+  }
+  
+  .page-placeholder__content h2 {
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+  
+  .page-placeholder__content p {
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  
   /* Responsive Design */
   @media (max-width: 768px) {
     .main-wrapper,
